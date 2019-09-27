@@ -9,6 +9,12 @@ gcc client.c chat.c -lncurses -o client
 
 gcc server.c chat.c -lncurses -o server 
 
+Usage: 
+
+server [port]   
+
+client [ip] [port]
+
 TODO: 
 
 [x] Allow messages to be both sent and received simultaneously.
