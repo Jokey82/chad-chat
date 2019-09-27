@@ -55,7 +55,8 @@ int main(int argc, char **argv)
 	initscr();
 	noecho();
 	raw();
-	send_mode(client);
+	//send_mode(client);
+	chat_loop(client);
 	endwin();
 	return 0;
 

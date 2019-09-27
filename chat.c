@@ -8,56 +8,52 @@
 #include<ncurses.h>
 #include"chat.h"
 
-void send_mode(int socket){
-	char buff[MAX];
+
+void chat_loop(int socket){
+	char buff[MAX], sbuff[MAX];
 	char tmp;
 	int n, y=0, x=0;
-	for(;;){
-		bzero(buff, sizeof(buff));
-		printw("YOU: ");
-		n=0;
-		while(1){
-			tmp = getch();
-			getyx(stdscr, y, x);
-			if(tmp == '`')
-				return;
-			else if(tmp == '\n')
-				break;
-			else if(tmp == ALT_BACKSPACE){
-				if(x >=6){
-					mvdelch(y, x-1);
-					buff[--n] = NULL;
-				}
-			}
-			else{
-				printw("%c", tmp);
-				buff[n++] = tmp;
-			}
-			refresh();
+	timeout(1);
+	bzero(buff, sizeof(buff));
+	printw("YOU: ");
+	n=0;
+	while(1){
+		tmp = getch();
+		getyx(stdscr, y, x);
+		if(tmp == '`')
+			return;
+		else if(tmp == '\n'){
+			send(socket, buff, sizeof(buff), 0);
+			bzero(buff, sizeof(buff));
+	//		printw("YOU: ");
+			move(++y, 0);
+			n=0;
 		}
-		x = 0;
-		move(++y, x);
-		send(socket, buff, sizeof(buff), 0);
+		else if(tmp == ALT_BACKSPACE){
+			if(x >=6){
+				mvdelch(y, x-1);
+				buff[--n] = NULL;
+			}
+		}
+		else if(tmp != ERR){
+			printw("%c", tmp);
+			buff[n++] = tmp;
+		}
+
+		bzero(sbuff, sizeof(sbuff));
+		recv(socket, sbuff, sizeof(sbuff), MSG_DONTWAIT);
+		if(check_buff(sbuff, sizeof(sbuff)) == 0){
+			printw("RECEIVED: %s", sbuff);
+			move(++y, 0);
+		}
+		refresh();
 	}
-	return;
 }
 
-void recv_mode(int socket){	
-	char buff[MAX];
-	char tmp;
-	int n, y, x;
-	printw("\nLISTENING...");	
-	getyx(stdscr, y, x);
-	move(++y, 0);
-	while(1){
-		refresh();
-		timeout(1);
-		if((tmp = getch())== 'q')
-			return;
-		bzero(buff, sizeof(buff));
-		recv(socket, buff, sizeof(buff), MSG_WAITALL);
-		printw("RECEIVED: %s", buff);
-		move(++y, 0);
+int check_buff(char* buffer, size_t n){
+	for(int i=0;i<n;i++){
+		if(buffer[i]!=NULL)
+			return 0;
 	}
-	return;
+	return -1;
 }

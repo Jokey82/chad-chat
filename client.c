@@ -47,7 +47,8 @@ int main(int argc, char **argv)
 	initscr();
 	raw();
 	noecho();
-	recv_mode(sock);
+	//recv_mode(sock);
+	chat_loop(sock);
 	endwin();
     	return 0;
 

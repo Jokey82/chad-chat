@@ -14,3 +14,5 @@
 
 void send_mode(int socket);
 void recv_mode(int socket);	
+void chat_loop(int socket);
+int check_buff(char* buffer, size_t n);
