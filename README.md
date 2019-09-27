@@ -11,8 +11,6 @@ gcc server.c chat.c -lncurses -o server
 
 TODO: 
 
-- Allow messages to be both sent and received simultaneously.
+[x] Allow messages to be both sent and received simultaneously.
 
-- Implement proper client-server solution.
-
-- Improve UI.
+[ ] Improve UI.
