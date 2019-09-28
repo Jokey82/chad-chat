@@ -19,4 +19,4 @@ TODO:
  - [ ] Implement proper client - server solution. 
  - [ ] Multiple clients. 
  - [ ] Chatrooms.
- - [ ] Improve UI.
+ - Constant UI improvements.
