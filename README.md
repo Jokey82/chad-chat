@@ -1,7 +1,7 @@
 # chat v0.2
 Basic chat program with ncurses ui.
 Messages can now be sent in both directions.
-I'm not sure if it even works over the Internet without port forwarding or something, only tested it over LAN.
+Port forwarding is needed to use this over the Internet.
 
 Compilation:
 
