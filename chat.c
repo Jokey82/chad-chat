@@ -12,7 +12,10 @@
 void chat_loop(int socket){
 	char buff[MAX], sbuff[MAX];
 	char tmp;
-	int n, y=0, x=0;
+	int n, y=0, x=0, maxcol, maxrow, recy, recx;
+	getmaxyx(stdscr, maxrow, maxcol);
+	recy = 0;
+	recx = maxcol/2;
 	timeout(1);
 	bzero(buff, sizeof(buff));
 	printw("YOU: ");
@@ -30,7 +33,7 @@ void chat_loop(int socket){
 			n=0;
 		}
 		else if(tmp == ALT_BACKSPACE){
-			if(x >=6){
+			if(x > 0){
 				mvdelch(y, x-1);
 				buff[--n] = NULL;
 			}
@@ -43,8 +46,10 @@ void chat_loop(int socket){
 		bzero(sbuff, sizeof(sbuff));
 		recv(socket, sbuff, sizeof(sbuff), MSG_DONTWAIT);
 		if(check_buff(sbuff, sizeof(sbuff)) == 0){
+			getyx(stdscr, y, x);
+			move(recy++, recx); 
 			printw("RECEIVED: %s", sbuff);
-			move(++y, 0);
+			move(y, x);
 		}
 		refresh();
 	}
