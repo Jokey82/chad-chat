@@ -1,7 +1,5 @@
 # chat v0.2
 Basic chat program with ncurses ui.
-Messages can now be sent in both directions.
-Port forwarding is needed to use this over the Internet.
 
 Compilation:
 
@@ -17,6 +15,8 @@ client [ip] [port]
 
 TODO: 
 
-[x] Allow messages to be both sent and received simultaneously.
-
-[ ] Improve UI.
+ - [x] Allow messages to be both sent and received simultaneously.
+ - [ ] Implement proper client - server solution. 
+ - [ ] Multiple clients. 
+ - [ ] Chatrooms.
+ - [ ] Improve UI.
