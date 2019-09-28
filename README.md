@@ -1,5 +1,5 @@
 # chat v0.2
-Basic chat program with ncurses ui for Linux.
+Basic chat program with ncurses UI for Linux.
 
 Compilation:
 
