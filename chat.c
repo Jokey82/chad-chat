@@ -23,8 +23,11 @@ void chat_loop(int socket){
 	while(1){
 		tmp = getch();
 		getyx(stdscr, y, x);
-		if(tmp == '`')
+		if(tmp == '`'){
+			sprintf(buff, "%d", BYE_MESSAGE);
+			send(socket, buff, sizeof(buff), 0);
 			return;
+		}
 		else if(tmp == '\n'){
 			send(socket, buff, sizeof(buff), 0);
 			bzero(buff, sizeof(buff));

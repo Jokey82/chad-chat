@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	uint16_t port = atoi(argv[2]);
         char* address = argv[1];	
 	struct sockaddr_in serv_addr;
-	char buffer[1024] = {0};
+	char buffer[1024];
 	char *message = "CLIENT CONNECTED\n";	
 
 	if((sock = socket(AF_INET, SOCK_STREAM, 0)) == 0){
@@ -42,12 +42,9 @@ int main(int argc, char **argv)
 		perror("CONNECTION FAILED");
 		exit(EXIT_FAILURE);
 	}
-	valread = read(sock, buffer, 1024); 
-	printf("%s\n",buffer );
 	initscr();
 	raw();
 	noecho();
-	//recv_mode(sock);
 	chat_loop(sock);
 	endwin();
     	return 0;
