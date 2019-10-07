@@ -1,4 +1,4 @@
-# chat v0.3
+# chad-chat v0.3
 Basic chat program with ncurses UI for Linux.
 
 Compilation:
