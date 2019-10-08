@@ -1,19 +1,9 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include <netdb.h> 
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include<unistd.h>
-#include<string.h>
-#include<pthread.h>
 #include"chat.h"
 
-#define MAX_THREADS 4
-#define MAX_CLIENTS 10
 
 void* connection_handler(void* socket);
 void transmitt(int socket, int index);
-int find_free(int array[], size_t size);
+void recv_uname(int socket, char* uname, size_t len);
 
 int n = 0;
 int clients[MAX_CLIENTS];
@@ -86,6 +76,7 @@ void* connection_handler(void* socket){
 		if(index < 0){
 			char* buff = "NO CONNECTIONS AVAILABLE";
 			send(client, buff, sizeof(buff), 0);
+			printf("MAX CLIENTS REACHED\n");
 			pthread_mutex_unlock(&lock);
 		}
 		else{
@@ -94,32 +85,45 @@ void* connection_handler(void* socket){
 			transmitt(client, index);
 		}
 	}
-	//else{return;}
 }
 
+
 void transmitt(int socket, int index){
-	char buff[MAX];
+	printf("CONNECTION TO THREAD %x\n", pthread_self());
+	char tmp[MAX];
 	char bye[MAX];
+	char uname[MAX_UNAME];
+	char buffer[MAX+MAX_UNAME];
 	sprintf(bye, "%d", BYE_MESSAGE);
+	recv_uname(socket, uname, MAX_UNAME);
 	while(1){
-		bzero(buff, sizeof(buff));
-		recv(socket, buff, sizeof(buff), 0);
-		if(strncmp(bye, buff, MAX) == 0){
+		bzero(tmp, sizeof(tmp));
+		bzero(buffer, sizeof(buffer));
+		recv(socket, tmp, sizeof(tmp), 0);
+		if(strncmp(bye, tmp, MAX) == 0){
 			printf("THREAD: %x DISCONNECTED\n", pthread_self());
+			snprintf(buffer, sizeof(buffer), "SERVER MESSAGE: %s HAS DISCONNECTED", uname);
+			for(int i =0;i<MAX_CLIENTS;i++){
+				if(clients[i] != NULL){
+					send(clients[i], buffer, sizeof(buffer), 0);
+				}
+			}
 			clients[index] = NULL;
 			return;
 		}
+		snprintf(buffer, sizeof(buffer), "%s: %s", uname, tmp);
 		for(int i =0;i<MAX_CLIENTS;i++){
 			if(clients[i] != NULL){
-				send(clients[i], buff, sizeof(buff), 0);
+				send(clients[i], buffer, sizeof(buffer), 0);
 			}
 		}
 	}
 }
 
-int find_free(int array[], size_t size){
-	for(int i =0; i<size;i++){
-		if(array[i] == NULL){return i;};
-	}
-	return -1;
+void recv_uname(int socket, char* uname, size_t len){
+	char prompt[MAX_UNAME];
+	snprintf(prompt, sizeof(prompt), "USERNAME: ");
+	send(socket, prompt, sizeof(prompt), 0);
+	recv(socket, uname, len, 0);
+	printf("USERNAME RECEIVED: %s\n", uname);
 }
