@@ -1,4 +1,4 @@
-# chad-chat v0.3
+# chad-chat v0.3.2
 Basic chat program with ncurses UI for Linux.
 
 Compilation:
@@ -19,7 +19,7 @@ TODO:
  - [x] Implement proper client - server solution. 
  - [x] Multiple clients. 
  - [x] Chatrooms.
- - [ ] Usernames
+ - [x] Usernames
  - [ ] Stability
  - [ ] Password-protected servers
  - Constant UI improvements.
