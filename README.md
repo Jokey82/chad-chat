@@ -14,7 +14,7 @@ server [port]
 client [ip] [port]
 
 Issues:  
-Programm had been tested on virtual machine(Debian-10 on Hyper-V) and on the physical one. Virtual machine tests showed some issues, wich caused usernames sometimes to appear corrupted and appended with unprintable characters. This issues, despite being fairly common for vm test, have never been envountered on physical machine, so at the moment I consider them to be caused by certain VM issues. 
+Program had been tested on virtual machine(Debian-10 on Hyper-V) and on the physical one. Virtual machine tests showed some issues, wich caused usernames sometimes to appear corrupted and appended with unprintable characters. This issues, despite being fairly common for vm tests, have never been envountered on physical machine, so at the moment I consider them to be caused by certain VM specialities. 
 
 TODO: 
 
