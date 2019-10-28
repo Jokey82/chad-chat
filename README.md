@@ -7,14 +7,14 @@ gcc client.c chat.c -lncurses -lpthread -o client
 
 gcc server.c chat.c -lncurses -lpthread -o server 
 
-Usage: 
+Usage:  
 
-server [port]   
+server [port] [password]  
 
 client [ip] [port]
 
 Issues:  
-Program had been tested on virtual machine(Debian-10 on Hyper-V) and on the physical one. Virtual machine tests showed some issues, wich caused usernames sometimes to appear corrupted and appended with unprintable characters. This issues, despite being fairly common for vm tests, have never been envountered on physical machine, so at the moment I consider them to be caused by certain VM specialities. 
+Passwords and usernames are currently required to be >6 charachters, due to issues encountered during testing.
 
 TODO: 
 
@@ -23,8 +23,8 @@ TODO:
  - [x] Multiple clients; 
  - [x] Chatrooms;
  - [x] Usernames;
+ - [x] Password-protected servers;
  - [ ] User accounts and password authentification; 
- - [ ] Password-protected servers;
  - [ ] Big UI update; 
  - [ ] Private user-user communication;
  - Constant stability improvements;
