@@ -1,12 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include <netdb.h> 
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include <arpa/inet.h>
-#include<unistd.h>
-#include<string.h>
-#include<ncurses.h>
 
 #include"chat.h"
 
@@ -45,6 +36,16 @@ int main(int argc, char **argv)
 	initscr();
 	raw();
 	noecho();
+	if(send_pass(sock)<0){
+		printw("Failed to authorize\n");
+		endwin();	
+		return 0;
+	}
+	if(send_uname(sock)<0){
+		printw("Failed to send username\n");
+		endwin();
+		return 0;
+	}
 	chat_loop(sock);
 	endwin();
     	return 0;

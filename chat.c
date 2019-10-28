@@ -1,16 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include <netdb.h> 
-#include<sys/socket.h>
-#include<netinet/in.h>
-#include<unistd.h>
-#include<string.h>
-#include<ncurses.h>
 #include"chat.h"
 
 
 void chat_loop(int socket){
-	char buff[MAX], sbuff[MAX];
+	char buff[MAX], sbuff[MAX+MAX_UNAME];
 	char tmp;
 	int n, y=0, x=0, maxcol, maxrow, recy, recx;
 	getmaxyx(stdscr, maxrow, maxcol);
@@ -29,9 +21,10 @@ void chat_loop(int socket){
 			return;
 		}
 		else if(tmp == '\n'){
-			send(socket, buff, sizeof(buff), 0);
+			if(send(socket, buff, sizeof(buff), 0)<0){
+				printw("Failed to send message to server\n");
+			}
 			bzero(buff, sizeof(buff));
-	//		printw("YOU: ");
 			move(++y, 0);
 			n=0;
 		}
@@ -51,11 +44,74 @@ void chat_loop(int socket){
 		if(check_buff(sbuff, sizeof(sbuff)) == 0){
 			getyx(stdscr, y, x);
 			move(recy++, recx); 
-			printw("RECEIVED: %s", sbuff);
+			printw("%s", sbuff);
 			move(y, x);
 		}
 		refresh();
 	}
+}
+
+int send_uname(int socket){
+	char buff[MAX], unbuff[MAX_UNAME];
+	char tmp;
+	int n=0, y=0, x=0, init_x;
+	bzero(buff, sizeof(buff));
+	if(recv(socket, buff, sizeof(buff), 0)<0){
+		printw("Failed to get responce from server\n");
+		return -1;
+	}
+	printw("%s", buff);
+	getyx(stdscr, y, init_x);
+	while((tmp = getch())!='\n' || n < 5){
+		getyx(stdscr, y, x);
+		if(tmp == ALT_BACKSPACE){
+			if(x > init_x){
+				mvdelch(y, x-1);
+				unbuff[--n] = NULL;
+			}
+		}
+		else if(tmp != ERR && tmp != '\n'){
+			if(n < MAX_UNAME){
+				printw("%c", tmp);
+				unbuff[n++] = tmp;
+			}
+		}
+		refresh();
+	}
+	printw("\n");
+	return send(socket, unbuff, sizeof(unbuff), 0);
+}	
+
+int send_pass(int socket){
+	char buff[MAX], passbuff[MAX_UNAME];
+	char tmp;
+	int n=0, y=0, x=0, init_x;
+	bzero(buff, sizeof(buff));
+	if(recv(socket, buff, sizeof(buff), 0)<0){
+		printw("Failed to get responce from server\n");
+		return -1;
+	}
+	printw("%s", buff);
+	getyx(stdscr, y, init_x);
+	while((tmp = getch())!='\n'){
+		getyx(stdscr, y, x);
+		if(tmp == ALT_BACKSPACE){
+			if(x > init_x){
+				mvdelch(y, x-1);
+				passbuff[--n] = NULL;
+			}
+		}
+		else if(tmp != ERR && tmp != '\n'){
+			if(n < MAX_UNAME){
+				printw("*");
+				passbuff[n++] = tmp;
+			}
+		}
+		refresh();
+	}
+	printw("\n");
+	return send(socket, passbuff, sizeof(passbuff), 0);
+	
 }
 
 int check_buff(char* buffer, size_t n){
@@ -64,4 +120,23 @@ int check_buff(char* buffer, size_t n){
 			return 0;
 	}
 	return -1;
+}
+
+int find_free(int array[], size_t size){
+	for(int i =0; i<size;i++){
+		if(array[i] == NULL){return i;};
+	}
+	return -1;
+}
+
+int find_string_in_array(char** array, char* entry,  size_t arr_len){
+	for(int i=0;i<arr_len;i++){
+		if(array[i]!=NULL){
+			if(strcmp(array[i], entry) == 0){
+				return i;
+			}
+		}
+	}
+	return -1;
+	
 }
