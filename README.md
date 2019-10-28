@@ -19,13 +19,14 @@ Passwords and usernames are currently required to be >6 charachters, due to issu
 TODO: 
 
  - [x] Allow messages to be both sent and received simultaneously;
- - [x] Implement proper client - server solution; 
+ - [x] Implement proper client - server model; 
  - [x] Multiple clients; 
  - [x] Chatrooms;
  - [x] Usernames;
  - [x] Password-protected servers;
- - [ ] User accounts and password authentification; 
  - [ ] Big UI update; 
+ - [ ] Encryption;
+ - [ ] User accounts and password authentification; 
  - [ ] Private user-user communication;
  - Constant stability improvements;
  - Constant UI improvements.
