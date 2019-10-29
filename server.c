@@ -3,7 +3,7 @@
 
 void* connection_handler(void* socket);
 void transmitt(int socket, int index);
-int recv_uname(int socket, char* uname);
+int recv_uname(int socket);
 int serv_auth(int socket, char* password);
 
 int n = 0;
@@ -76,9 +76,7 @@ int main(int argc, char **argv)
 	for(int i =0;i<MAX_CLIENTS;i++){
 		pthread_join(pool[i], NULL);	
 	}
-
 	return 0;
-
 }
 
 void* connection_handler(void* socket){
@@ -107,25 +105,29 @@ void transmitt(int socket, int index){
 	printf("CONNECTION TO THREAD %x\n", pthread_self());
 	char tmp[MAX];
 	char bye[MAX];
-	char uname[MAX_UNAME];
+	//char uname[MAX_UNAME];
 	char buffer[MAX+MAX_UNAME];
 	int uname_index = 0;
 	int temp;
 	sprintf(bye, "%d", BYE_MESSAGE);
 	if((temp = serv_auth(socket, password))!=0){
 		printf("strncmp result: %d\n", temp);
-		snprintf(uname, sizeof(uname), "Incorrect password");
-		if(send(socket, uname, sizeof(uname), 0)<0){
+		snprintf(buffer, sizeof(buffer), "Incorrect password");
+		if(send(socket, buffer, sizeof(buffer), 0)<0){
 			printf("Failed to send error message\n");
 		}
 		printf("Auth failed\n");
+		clients[index]=NULL;
 		return;
 	}
-	if ((uname_index = recv_uname(socket, uname)) < 0){
+
+	if ((uname_index = recv_uname(socket)) < 0){
 		printf("Failed to receive username. Disconnecting...\n");
 		clients[index] = NULL;
+		bzero(usernames[uname_index], sizeof(usernames[uname_index]));
 		return;
 	}
+
 	while(1){
 		bzero(tmp, sizeof(tmp));
 		bzero(buffer, sizeof(buffer));
@@ -141,7 +143,7 @@ void transmitt(int socket, int index){
 		}
 		if(strncmp(bye, tmp, MAX) == 0){
 			printf("THREAD: %x DISCONNECTED\n", pthread_self());
-			snprintf(buffer, sizeof(buffer), "SERVER MESSAGE: %s HAS DISCONNECTED", uname);
+			snprintf(buffer, sizeof(buffer), "SERVER MESSAGE: %s HAS DISCONNECTED", usernames[uname_index]);
 			for(int i =0;i<MAX_CLIENTS;i++){
 				if(clients[i] != NULL){
 					if(send(clients[i], buffer, sizeof(buffer), 0)<0){
@@ -153,7 +155,7 @@ void transmitt(int socket, int index){
 			bzero(usernames[uname_index], sizeof(usernames[uname_index]));
 			return;
 		}
-		snprintf(buffer, sizeof(buffer), "%s: %s", uname, tmp);
+		snprintf(buffer, sizeof(buffer), "%s: %s", usernames[uname_index], tmp);
 		for(int i =0;i<MAX_CLIENTS;i++){
 			if(clients[i] != NULL){
 				if(send(clients[i], buffer, sizeof(buffer), 0)<0){
@@ -165,7 +167,9 @@ void transmitt(int socket, int index){
 	}
 }
 
-int recv_uname(int socket, char* uname){
+int recv_uname(int socket){
+	char uname[MAX_UNAME];
+	memset(uname, 0, sizeof(uname));
 	char prompt[MAX_UNAME];
 	int index = 0;
 	char *un_arrp[MAX_UNAME];
@@ -181,6 +185,7 @@ int recv_uname(int socket, char* uname){
 	if(recv(socket, uname, MAX_UNAME, 0)<0){
 		return -1;
 	}
+
 	pthread_mutex_lock(&lock);
 	if(find_string_in_array(un_arrp, uname, MAX_CLIENTS)!=-1){
 		snprintf(prompt, sizeof(prompt), "Username taken");

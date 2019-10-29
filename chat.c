@@ -56,13 +56,14 @@ int send_uname(int socket){
 	char tmp;
 	int n=0, y=0, x=0, init_x;
 	bzero(buff, sizeof(buff));
+	bzero(unbuff, sizeof(unbuff));
 	if(recv(socket, buff, sizeof(buff), 0)<0){
 		printw("Failed to get responce from server\n");
 		return -1;
 	}
 	printw("%s", buff);
 	getyx(stdscr, y, init_x);
-	while((tmp = getch())!='\n' || n < 5){
+	while((tmp = getch())!='\n' || n<1){
 		getyx(stdscr, y, x);
 		if(tmp == ALT_BACKSPACE){
 			if(x > init_x){
