@@ -1,22 +1,22 @@
-# chad-chat v0.3.3
+# chad-chat v0.3.4
 Basic chat program with ncurses UI for Linux.
 
-Compilation:
+## Compilation:
 
 gcc client.c chat.c -lncurses -lpthread -o client
 
 gcc server.c chat.c -lncurses -lpthread -o server 
 
-Usage:  
+## Usage:  
 
 server [port] [password]  
 
-client [ip] [port]
+client [ip] [port]  
+To exit enter \` character  
+## Issues:  
+Present UI is only designed to support basic program functionality. 
 
-Issues:  
-Passwords and usernames are currently required to be >6 charachters, due to issues encountered during testing.
-
-TODO: 
+## TODO: 
 
  - [x] Allow messages to be both sent and received simultaneously;
  - [x] Implement proper client - server model; 
