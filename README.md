@@ -24,9 +24,10 @@ TODO:
  - [x] Chatrooms;
  - [x] Usernames;
  - [x] Password-protected servers;
- - [ ] Big UI update; 
+ - [ ] Fix corupted usernames issue;
+ - [ ] Major UI update; 
  - [ ] Encryption;
+ - [ ] Major refactoring;
  - [ ] User accounts and password authentification; 
  - [ ] Private user-user communication;
  - Constant stability improvements;
- - Constant UI improvements.
