@@ -8,6 +8,7 @@
 #include<string.h>
 #include<pthread.h>
 #include<ncurses.h>
+#include"ui.h"
 
 //common
 #define ALT_BACKSPACE 127

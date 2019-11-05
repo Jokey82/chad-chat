@@ -4,17 +4,12 @@
 void chat_loop(int socket){
 	char buff[MAX], sbuff[MAX+MAX_UNAME];
 	char tmp;
-	int n, y=0, x=0, maxcol, maxrow, recy, recx;
-	getmaxyx(stdscr, maxrow, maxcol);
-	recy = 0;
-	recx = maxcol/2;
+	int n;
 	timeout(1);
 	bzero(buff, sizeof(buff));
-	printw("YOU: ");
 	n=0;
 	while(1){
 		tmp = getch();
-		getyx(stdscr, y, x);
 		if(tmp == '`'){
 			sprintf(buff, "%d", BYE_MESSAGE);
 			send(socket, buff, sizeof(buff), 0);
@@ -22,95 +17,89 @@ void chat_loop(int socket){
 		}
 		else if(tmp == '\n'){
 			if(send(socket, buff, sizeof(buff), 0)<0){
-				printw("Failed to send message to server\n");
+				print_msg("Failed to send message to server\n");
 			}
 			bzero(buff, sizeof(buff));
-			move(++y, 0);
+			clear_prompt();
 			n=0;
 		}
 		else if(tmp == ALT_BACKSPACE){
-			if(x > 0){
-				mvdelch(y, x-1);
+			if(n > 0){
+				erase_char(stdscr);
 				buff[--n] = NULL;
 			}
 		}
 		else if(tmp != ERR){
-			printw("%c", tmp);
+			print_char(stdscr, tmp);
 			buff[n++] = tmp;
 		}
 
 		bzero(sbuff, sizeof(sbuff));
 		recv(socket, sbuff, sizeof(sbuff), MSG_DONTWAIT);
 		if(check_buff(sbuff, sizeof(sbuff)) == 0){
-			getyx(stdscr, y, x);
-			move(recy++, recx); 
-			printw("%s", sbuff);
-			move(y, x);
+			print_msg(sbuff);
 		}
-		refresh();
 	}
 }
 
 int send_uname(int socket){
 	char buff[MAX], unbuff[MAX_UNAME];
 	char tmp;
-	int n=0, y=0, x=0, init_x;
+	int n=0;
+	WINDOW* uname_win;
 	bzero(buff, sizeof(buff));
 	bzero(unbuff, sizeof(unbuff));
+	uname_win = init_popup();
 	if(recv(socket, buff, sizeof(buff), 0)<0){
-		printw("Failed to get responce from server\n");
+		print_popup_prompt(uname_win, "Failed to get responce from server");
 		return -1;
 	}
-	printw("%s", buff);
-	getyx(stdscr, y, init_x);
+	print_popup_prompt(uname_win, buff);
 	while((tmp = getch())!='\n' || n<1){
-		getyx(stdscr, y, x);
 		if(tmp == ALT_BACKSPACE){
-			if(x > init_x){
-				mvdelch(y, x-1);
+			if(n > n){
+				erase_char(uname_win);
 				unbuff[--n] = NULL;
 			}
 		}
 		else if(tmp != ERR && tmp != '\n'){
 			if(n < MAX_UNAME){
-				printw("%c", tmp);
+				print_char(uname_win, tmp);
 				unbuff[n++] = tmp;
 			}
 		}
-		refresh();
 	}
-	printw("\n");
+	close_window(uname_win);
 	return send(socket, unbuff, sizeof(unbuff), 0);
 }	
 
 int send_pass(int socket){
 	char buff[MAX], passbuff[MAX_UNAME];
 	char tmp;
-	int n=0, y=0, x=0, init_x;
+	int n=0;
+	WINDOW* pass_win;
 	bzero(buff, sizeof(buff));
+	pass_win = init_popup();
 	if(recv(socket, buff, sizeof(buff), 0)<0){
-		printw("Failed to get responce from server\n");
+		print_popup_prompt(pass_win, "Failed to get responce from server");
 		return -1;
 	}
-	printw("%s", buff);
-	getyx(stdscr, y, init_x);
+	print_popup_prompt(pass_win, buff);
 	while((tmp = getch())!='\n'){
-		getyx(stdscr, y, x);
 		if(tmp == ALT_BACKSPACE){
-			if(x > init_x){
-				mvdelch(y, x-1);
+			if(n > 0){
+				erase_char(pass_win);
 				passbuff[--n] = NULL;
 			}
 		}
 		else if(tmp != ERR && tmp != '\n'){
 			if(n < MAX_UNAME){
-				printw("*");
+				print_char(pass_win, '*');
 				passbuff[n++] = tmp;
 			}
 		}
-		refresh();
 	}
-	printw("\n");
+	close_window(pass_win);
 	return send(socket, passbuff, sizeof(passbuff), 0);
 	
 }

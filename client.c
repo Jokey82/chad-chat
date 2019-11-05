@@ -33,21 +33,19 @@ int main(int argc, char **argv)
 		perror("CONNECTION FAILED");
 		exit(EXIT_FAILURE);
 	}
-	initscr();
-	raw();
-	noecho();
+	init_ui();
 	if(send_pass(sock)<0){
-		printw("Failed to authorize\n");
-		endwin();	
+		exit_ui();
+		printf("Failed to authorize\n");
 		return 0;
 	}
 	if(send_uname(sock)<0){
-		printw("Failed to send username\n");
-		endwin();
+		exit_ui();
+		printf("Failed to send username\n");
 		return 0;
 	}
 	chat_loop(sock);
-	endwin();
+	exit_ui();
     	return 0;
 
 }
