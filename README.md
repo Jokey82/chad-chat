@@ -1,9 +1,12 @@
-# chad-chat v0.3.4
+# chad-chat v0.4
 Basic chat program with ncurses UI for Linux.
+
+## Update
+Completely rewritten UI. Still ugly but a bit more useful.
 
 ## Compilation:
 
-gcc client.c chat.c -lncurses -lpthread -o client
+gcc client.c chat.c ui.c -lncurses -o client
 
 gcc server.c chat.c -lncurses -lpthread -o server 
 
@@ -14,7 +17,7 @@ server [port] [password]
 client [ip] [port]  
 To exit enter \` character  
 ## Issues:  
-Present UI is only designed to support basic program functionality. 
+Backspace does not work in the username submitting window. 
 
 ## TODO: 
 
@@ -25,7 +28,7 @@ Present UI is only designed to support basic program functionality.
  - [x] Usernames;
  - [x] Password-protected servers;
  - [x] Fix corrupted usernames issue;
- - [ ] Major UI update; 
+ - [x] Major UI update; 
  - [ ] Encryption;
  - [ ] Major refactoring;
  - [ ] User accounts and password authentification; 
