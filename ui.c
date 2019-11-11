@@ -31,7 +31,7 @@ int init_ui(){
 
 WINDOW* init_popup(){
 	WINDOW *temp;
-	int height=10, width=COLS-10, y=LINES/2, x=5;
+	int height=10, width=COLS-10, y=LINES/3, x=5;
 	temp = create_newwin(height, width, y, x);
 	box(temp, '|', '-');
 	wrefresh(temp);
