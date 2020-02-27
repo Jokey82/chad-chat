@@ -1,5 +1,5 @@
 # chad-chat v0.4
-Basic chat program with ncurses UI for Linux.
+Basic chat program with ncurses UI for Linux. Been writing it mostly for educational purposes. 
 
 ## Update
 Completely rewritten UI. Still ugly but a bit more useful.
